@@ -1,0 +1,176 @@
+Natürlich! Lass uns den Code Schritt für Schritt durchgehen und verstehen, was er tut. Dieser Code erstellt ein PyQt6-Widget, das ein **Diagramm (Chart)** mit zwei Linien zeigt: einen Goldpreis in Euro und einen Goldpreis in Dollar.
+
+---
+
+### **1. Importieren der benötigten Module**
+```python
+from PyQt6.QtCharts import QChartView, QChart, QLineSeries, QDateTimeAxis, QValueAxis
+from PyQt6.QtCore import Qt, QDateTime
+```
+
+- `QChartView`: Ein Widget, das ein Diagramm anzeigt.
+- `QChart`: Repräsentiert das Diagramm selbst.
+- `QLineSeries`: Eine Linie im Diagramm, die Datenpunkte verbindet.
+- `QDateTimeAxis`: Eine Achse, die Datums- und Zeitangaben darstellt.
+- `QValueAxis`: Eine Achse, die Zahlen darstellt.
+- `Qt`: Enthält viele Konstanten, z. B. für die Ausrichtung.
+- `QDateTime`: Stellt ein Datum und eine Uhrzeit dar.
+
+---
+
+### **2. Definition der Klasse `CentralWidget`**
+```python
+class CentralWidget(QChartView):
+    def __init__(self, parent=None):
+        super(CentralWidget, self).__init__(parent)
+```
+
+- **`class CentralWidget(QChartView)`**: Die Klasse erbt von `QChartView`. Das bedeutet, dass `CentralWidget` ein Widget ist, das ein Diagramm anzeigen kann.
+- **`__init__(self, parent=None)`**: Der Konstruktor der Klasse. Er wird aufgerufen, wenn ein neues Objekt von `CentralWidget` erstellt wird.
+- **`super(CentralWidget, self).__init__(parent)`**: Ruft den Konstruktor der Elternklasse `QChartView` auf, damit die Grundfunktionen von `QChartView` initialisiert werden.
+
+---
+
+### **3. Erstellen der Euro-Linie**
+```python
+self.__series_euro = QLineSeries()
+self.__series_euro.setName("Goldpreis Euro")
+```
+
+- **`self.__series_euro`**: Erstellt eine Linie (Serie) im Diagramm.
+- **`setName("Goldpreis Euro")`**: Gibt der Linie einen Namen, der in der Legende des Diagramms angezeigt wird.
+
+---
+
+### **4. Hinzufügen von Datenpunkten zur Euro-Linie**
+```python
+dates = [
+    QDateTime(2024, 12, 15, 0, 0, 0),
+    QDateTime(2024, 12, 18, 0, 0, 0),
+    QDateTime(2025, 1, 7, 0, 0, 0),
+    QDateTime(2025, 2, 2, 0, 0, 0)
+]
+
+self.__series_euro.append(dates[0].toMSecsSinceEpoch(), 1500)
+self.__series_euro.append(dates[1].toMSecsSinceEpoch(), 1800)
+self.__series_euro.append(dates[2].toMSecsSinceEpoch(), 1900)
+self.__series_euro.append(dates[3].toMSecsSinceEpoch(), 2000)
+```
+
+- **`dates`**: Eine Liste von `QDateTime`-Objekten, die spezifische Daten repräsentieren.
+- **`toMSecsSinceEpoch()`**: Konvertiert das Datum in Millisekunden seit dem 1. Januar 1970 (sogenannte "Unix-Zeit"). Diese Zeitangabe wird für die x-Achse benötigt.
+- **`append()`**: Fügt Datenpunkte zur Linie hinzu. Jeder Punkt hat eine x-Koordinate (Datum) und eine y-Koordinate (Preis).
+
+---
+
+### **5. Erstellen der Dollar-Linie**
+```python
+self.__series_dollar = QLineSeries()
+self.__series_dollar.setName("Goldpreis Dollar")
+```
+
+- Erzeugt eine weitere Linie für die Preise in Dollar, ähnlich wie bei der Euro-Linie.
+
+---
+
+### **6. Hinzufügen von Datenpunkten zur Dollar-Linie**
+```python
+self.__series_dollar.append(dates[0].toMSecsSinceEpoch(), 1600)
+self.__series_dollar.append(dates[1].toMSecsSinceEpoch(), 1850)
+self.__series_dollar.append(dates[2].toMSecsSinceEpoch(), 1950)
+self.__series_dollar.append(dates[3].toMSecsSinceEpoch(), 2200)
+```
+
+- Fügt Datenpunkte für die Dollar-Linie hinzu. Der Ablauf ist der gleiche wie bei der Euro-Linie.
+
+---
+
+### **7. Erstellen der Achsen**
+```python
+z_axis = QValueAxis()
+z_axis.setRange(1000, 2500)
+z_axis.setTitleText("Preis in Dollar")
+```
+
+- **`QValueAxis`**: Stellt eine Achse für numerische Werte dar.
+- **`setRange(1000, 2500)`**: Gibt den Bereich der Achse an (zwischen 1000 und 2500).
+- **`setTitleText("Preis in Dollar")`**: Fügt der Achse einen Titel hinzu.
+
+Der gleiche Ablauf wird für die anderen Achsen verwendet:
+```python
+x_axis = QDateTimeAxis()
+x_axis.setFormat("dd.MM.yyyy")
+x_axis.setTitleText("Datum")
+x_axis.setTickCount(5)
+
+y_axis = QValueAxis()
+y_axis.setRange(1000, 2500)
+y_axis.setTitleText("Preis in €")
+```
+- **`x_axis`**: Eine Achse für Datumsangaben. Das Format der Datumsanzeige ist `"dd.MM.yyyy"`.
+- **`y_axis`**: Eine Achse für numerische Werte in Euro.
+
+---
+
+### **8. Erstellen und Konfigurieren des Diagramms**
+```python
+chart = QChart()
+chart.setWindowTitle("Goldpreis")
+```
+
+- **`QChart`**: Erstellt das eigentliche Diagramm.
+- **`setWindowTitle("Goldpreis")`**: Gibt dem Diagramm einen Titel.
+
+---
+
+### **9. Hinzufügen der Linien und Achsen zum Diagramm**
+```python
+chart.addSeries(self.__series_euro)
+chart.addSeries(self.__series_dollar)
+```
+
+- **`addSeries`**: Fügt die Euro- und Dollar-Linien zum Diagramm hinzu.
+
+```python
+chart.addAxis(x_axis, Qt.AlignmentFlag.AlignBottom)
+chart.addAxis(y_axis, Qt.AlignmentFlag.AlignLeft)
+chart.addAxis(z_axis, Qt.AlignmentFlag.AlignRight)
+```
+
+- **`addAxis`**: Fügt Achsen hinzu und richtet sie aus.
+  - **`AlignBottom`**: x-Achse unten.
+  - **`AlignLeft`**: y-Achse links.
+  - **`AlignRight`**: z-Achse rechts.
+
+---
+
+### **10. Verbinden der Linien mit den Achsen**
+```python
+self.__series_euro.attachAxis(x_axis)
+self.__series_euro.attachAxis(y_axis)
+self.__series_dollar.attachAxis(x_axis)
+self.__series_dollar.attachAxis(z_axis)
+```
+
+- **`attachAxis`**: Verbindet die Linien mit den Achsen, damit die Daten korrekt dargestellt werden.
+
+---
+
+### **11. Anzeigen des Diagramms**
+```python
+self.setChart(chart)
+```
+
+- **`setChart(chart)`**: Verknüpft das Diagramm mit dem `QChartView`, sodass es angezeigt wird.
+
+---
+
+### **Zusammenfassung:**
+- Das Programm erstellt ein Diagramm mit zwei Linien (Goldpreis in Euro und Dollar).
+- Es zeigt:
+  - Eine x-Achse für Datumsangaben.
+  - Eine y-Achse für Euro-Werte.
+  - Eine z-Achse (rechte Seite) für Dollar-Werte.
+- Die Linien werden mit Datenpunkten gefüllt und mit den Achsen verbunden.
+
+Das Ergebnis ist ein interaktives Diagramm in einem PyQt6-Fenster! 🎉
