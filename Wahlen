@@ -1,0 +1,101 @@
+from PyQt6.QtCharts import QChartView, QChart, QLineSeries, QDateTimeAxis, QValueAxis
+from PyQt6.QtCore import Qt, QDateTime
+from PyQt6.QtGui import QColor
+
+class CentralWidget(QChartView):
+    def __init__(self, parent=None):
+        super(CentralWidget, self).__init__(parent)
+
+
+        self.__line_series_union = QLineSeries()
+        self.__line_series_afd = QLineSeries()
+        self.__line_series_spd = QLineSeries()
+        self.__line_series_gruene = QLineSeries()
+
+
+        self.__line_series_union.setColor(QColor(1, 0, 0))
+        self.__line_series_afd.setColor(QColor(135, 206, 235))
+        self.__line_series_spd.setColor(QColor(255, 0, 0))
+        self.__line_series_gruene.setColor(QColor(0, 255, 0))
+
+
+        dates = [
+            QDateTime(2024, 12, 15, 0, 0, 0),
+            QDateTime(2024, 12, 22, 0, 0, 0),
+            QDateTime(2024, 12, 29, 0, 0, 0),
+            QDateTime(2025, 1, 5, 0, 0, 0),
+            QDateTime(2025, 1, 12, 0, 0, 0)
+        ]
+
+
+        self.__line_series_union.append(dates[0].toMSecsSinceEpoch(), 30)
+        self.__line_series_union.append(dates[1].toMSecsSinceEpoch(), 31)
+        self.__line_series_union.append(dates[2].toMSecsSinceEpoch(), 32)
+        self.__line_series_union.append(dates[3].toMSecsSinceEpoch(), 31)
+        self.__line_series_union.append(dates[4].toMSecsSinceEpoch(), 30)
+
+
+        self.__line_series_afd.append(dates[0].toMSecsSinceEpoch(), 19)
+        self.__line_series_afd.append(dates[1].toMSecsSinceEpoch(), 20)
+        self.__line_series_afd.append(dates[2].toMSecsSinceEpoch(), 21)
+        self.__line_series_afd.append(dates[3].toMSecsSinceEpoch(), 22)
+        self.__line_series_afd.append(dates[4].toMSecsSinceEpoch(), 21)
+
+
+        self.__line_series_spd.append(dates[0].toMSecsSinceEpoch(), 13)
+        self.__line_series_spd.append(dates[1].toMSecsSinceEpoch(), 14)
+        self.__line_series_spd.append(dates[2].toMSecsSinceEpoch(), 15)
+        self.__line_series_spd.append(dates[3].toMSecsSinceEpoch(), 16)
+        self.__line_series_spd.append(dates[4].toMSecsSinceEpoch(), 15)
+
+
+        self.__line_series_gruene.append(dates[0].toMSecsSinceEpoch(), 12)
+        self.__line_series_gruene.append(dates[1].toMSecsSinceEpoch(), 13)
+        self.__line_series_gruene.append(dates[2].toMSecsSinceEpoch(), 14)
+        self.__line_series_gruene.append(dates[3].toMSecsSinceEpoch(), 13)
+        self.__line_series_gruene.append(dates[4].toMSecsSinceEpoch(), 12)
+
+
+        x_axis = QDateTimeAxis()
+        x_axis.setFormat("dd.MM.yyyy")
+        x_axis.setTitleText("Datum")
+        x_axis.setTickCount(5)
+
+        y_axis = QValueAxis()
+        y_axis.setRange(0, 40)
+        y_axis.setTitleText("Prozentanteil")
+
+
+        chart = QChart()
+        chart.setWindowTitle('Wahlumfrage Bundestagswahl')
+
+
+        chart.addSeries(self.__line_series_union)
+        chart.addSeries(self.__line_series_afd)
+        chart.addSeries(self.__line_series_spd)
+        chart.addSeries(self.__line_series_gruene)
+
+
+        chart.addAxis(x_axis, Qt.AlignmentFlag.AlignBottom)
+        chart.addAxis(y_axis, Qt.AlignmentFlag.AlignLeft)
+
+
+        self.__line_series_union.attachAxis(x_axis)
+        self.__line_series_union.attachAxis(y_axis)
+
+        self.__line_series_afd.attachAxis(x_axis)
+        self.__line_series_afd.attachAxis(y_axis)
+
+        self.__line_series_spd.attachAxis(x_axis)
+        self.__line_series_spd.attachAxis(y_axis)
+
+        self.__line_series_gruene.attachAxis(x_axis)
+        self.__line_series_gruene.attachAxis(y_axis)
+
+
+        self.setChart(chart)
+
+        self.__line_series_union.setName("Union")
+        self.__line_series_afd.setName("AfD")
+        self.__line_series_spd.setName("SPD")
+        self.__line_series_gruene.setName("Grüne")
